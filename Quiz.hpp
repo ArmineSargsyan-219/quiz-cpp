@@ -1,20 +1,26 @@
 #ifndef QUIZ_H
 #define QUIZ_H
 
-#include "Question.hpp"
 #include <vector>
 #include <iostream>
+#include <memory>
+#include <memory> 
+#include "Question.hpp"
 
 class Quiz {
 private:
-    std::vector<Question*> questions;
+    std::vector<std::unique_ptr<Question>> questions;
     int score;
 
 public:
     Quiz() : score(0) {}
 
-    void addQuestion(Question* question) {
-        questions.push_back(question);
+    void addQuestion(std::unique_ptr<Question> question) {
+        questions.push_back(std::move(question));  
+    }
+
+    size_t getQuestionsSize() const {  
+        return questions.size();
     }
 
     void startQuiz() {
@@ -29,11 +35,7 @@ public:
         std::cout << "Your score: " << score << "/" << questions.size() << std::endl;
     }
 
-    ~Quiz() {
-        for (auto q : questions) {
-            delete q;
-        }
-    }
+    ~Quiz() {}
 };
 
 #endif
